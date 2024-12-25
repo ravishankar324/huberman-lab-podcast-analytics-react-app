@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
@@ -10,7 +10,7 @@ export default function DashboardChat() {
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [loadingDots, setLoadingDots] = useState('.'); // Dynamic dots state
   const [messageLimitReached, setMessageLimitReached] = useState(false); // Limit state
-  const maxMessages = 5; // Maximum number of responses allowed
+  const maxMessages = 10; // Maximum number of responses allowed
 
   // Handle dynamic dots animation
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function DashboardChat() {
     setIsLoading(true); // Start loading state
 
     // Send the full message history to the Flask backend
-    fetch('http://127.0.0.1:5000/chat', {
+    fetch('http://127.0.0.1:5000/process-query', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -121,44 +121,64 @@ export default function DashboardChat() {
             messages.map((message, index) => {
               // Only parse assistant messages for the text, thumbnail, and video URL
               if (message.role === 'assistant') {
-                const regex = /'(.*?)','(.*?)','(.*?)'/;
+                const regex = /'([^']*)',\s*'([^']*)',\s*'([^']*)'/;
                 const match = message.content.match(regex);
 
-                const text = match?.[1] || ''; // Extracted text
-                const thumbnailUrl = match?.[2] || ''; // Extracted thumbnail URL
-                const videoUrl = match?.[3] || ''; // Extracted video URL
+                if (match) {
+                  const text = match[1] || ''; // Extracted text
+                  const thumbnailUrl = match[2] || ''; // Extracted thumbnail URL
+                  const videoUrl = match[3] || ''; // Extracted video URL
 
-                return (
-                  <div
-                    key={index}
-                    className={`mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
-                  >
+                  return (
                     <div
-                      className={`inline-block p-3 rounded-lg ${
-                        message.role === 'user'
-                          ? 'bg-customGray text-white'
-                          : 'bg-customGray text-white'
-                      }`}
+                      key={index}
+                      className={`mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
                     >
-                      {/* Render Thumbnail Image with Link */}
-                      {thumbnailUrl && videoUrl && (
-                        <a href={videoUrl} target="_blank" rel="noopener noreferrer">
-                          <img
-                            src={thumbnailUrl}
-                            alt="Thumbnail"
-                            className="max-w-[200px] rounded-lg cursor-pointer mb-2"
-                            onError={(e) => {
-                              console.error('Error loading image:', e.target.src);
-                              e.target.style.display = 'none'; // Hide broken image
-                            }}
-                          />
-                        </a>
-                      )}
-                      {/* Render Text Below the Image */}
-                      {text && <p className="mt-2">{text}</p>}
+                      <div
+                        className={`inline-block p-3 rounded-lg ${
+                          message.role === 'user'
+                            ? 'bg-customGray text-white'
+                            : 'bg-customGray text-white'
+                        }`}
+                      >
+                        {/* Render Thumbnail Image with Link */}
+                        {thumbnailUrl && videoUrl && (
+                          <a href={videoUrl} target="_blank" rel="noopener noreferrer">
+                            <img
+                              src={thumbnailUrl}
+                              alt="Thumbnail"
+                              className="max-w-[200px] rounded-lg cursor-pointer mb-2"
+                              onError={(e) => {
+                                console.error('Error loading image:', e.target.src);
+                                e.target.style.display = 'none'; // Hide broken image
+                              }}
+                            />
+                          </a>
+                        )}
+                        {/* Render Text Below the Image */}
+                        {text && <p className="mt-2">{text}</p>}
+                      </div>
                     </div>
-                  </div>
-                );
+                  );
+                } else {
+                  // Fallback to plain text rendering
+                  return (
+                    <div
+                      key={index}
+                      className={`mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+                    >
+                      <div
+                        className={`inline-block p-3 rounded-lg ${
+                          message.role === 'user'
+                            ? 'bg-customGray text-white'
+                            : 'bg-customGray text-white'
+                        }`}
+                      >
+                        <p>{message.content.replace(/^'|'$/g, '')}</p> {/* Remove enclosing quotes */}
+                      </div>
+                    </div>
+                  );
+                }
               }
 
               // Render user messages
