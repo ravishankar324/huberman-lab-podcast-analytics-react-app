@@ -40,3 +40,7 @@ body {
 .chatbox-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #3b9c40; /* Thumb color on hover */
 }
+
+.rounded-top {
+  border-radius: 10px 10px 10px 0; 
+}

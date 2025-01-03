@@ -10,7 +10,7 @@ export default function DashboardChat() {
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [loadingDots, setLoadingDots] = useState('.'); // Dynamic dots state
   const [messageLimitReached, setMessageLimitReached] = useState(false); // Limit state
-  const maxMessages = 10; // Maximum number of responses allowed
+  const maxMessages = 20; // Maximum number of responses allowed
 
   // Handle dynamic dots animation
   useEffect(() => {
@@ -82,8 +82,7 @@ export default function DashboardChat() {
         <iframe
           title="Power BI Dashboard"
           className="w-full h-full rounded-md"
-          src="https://app.powerbi.com/view?r=eyJrIjoiMzNhOTcwOGItMTBjYy00NGY0LWIyODEtY2E4NDk1NmZiYmUzIiwidCI6IjdhZmI5ZTIyLTkzMDgtNDE4Ni04ZTI5LWVhMjMxZmYzYmFmNyIsImMiOjN9&navContentPaneEnabled=false&toolbar=false"
-          frameBorder="0"
+          src="https://app.powerbi.com/view?r=eyJrIjoiNWViYTk5YTEtZmRkYy00MmY3LWI4MmMtODA5Y2MwMGQ5MDljIiwidCI6IjdhZmI5ZTIyLTkzMDgtNDE4Ni04ZTI5LWVhMjMxZmYzYmFmNyIsImMiOjN9"
           allowFullScreen
         />
       </div>
@@ -92,29 +91,44 @@ export default function DashboardChat() {
       <div className="w-3/10 h-full flex flex-col bg-customBlack text-white shadow-lg rounded-lg p-1.5 relative">
         {/* White overlay and message when limit is reached */}
         {messageLimitReached && (
-          <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-black bg-opacity-80 flex items-center justify-center z-10">
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-black">You have reached the maximum limit</h1>
-              <p className="text-lg text-gray-600">Try again after some time</p>
+              <h1 className="text-2xl font-bold text-white">You have reached the maximum limit</h1>
+              <p className="text-lg text-white">Try again after some time</p>
             </div>
           </div>
         )}
 
         {/* Chat Header */}
-        <div className="h-10 bg-[#032e3e] flex items-center px-4 rounded-t-md">
-          <h1 className="text-2g font-semibold text-white">Chat Assistant</h1>
+        <div className="h-10 bg-customGray flex items-center justify-center px-4 rounded-t-md">
+          <h1 className="text-xl font-bold text-white">AI Assistant</h1>
         </div>
 
         {/* Chat Messages */}
         <div className="flex-1 p-2 overflow-y-auto chatbox-scrollbar relative">
           {/* Initial Message */}
           {showInitialMessage && (
-            <div className="absolute inset-0 flex justify-center items-center">
-              <div className="text-center p-4 rounded-lg bg-customGray text-white font-semibold max-w-[80%]">
-                Welcome! I'm your AI-powered assistant, here to help you discover the perfect Huberman Lab podcast video tailored to your interests.
-              </div>
-            </div>
-          )}
+  <div className="absolute inset-0 flex justify-center items-center">
+    <div className="text-center p-4 rounded-lg bg-customLightBlue text-black max-w-[80%]">
+      <p className="font-bold mb-5">
+      🤖 Welcome! I'm your AI-powered assistant, here to help you discover the perfect Huberman Lab podcast tailored to your interests.
+      </p>
+      <p className="font-semibold mb-2">Examples of questions you can ask:</p>
+      <div className="font-semibold text-left mb-2space-y-2">
+        <p>📌 Who is Andrew Huberman, and what does he specialize in?</p>
+        <p>📌 What topics does he cover in his videos?</p>
+        <p>📌 Which fitness-related video received the most attention?</p>
+        <p>📌 What is this specific video about?</p>
+        <p>📌 What does AMA in the dashboard mean?</p>
+        <p>📌 Has Andrew made any videos on fitness or exercise science?</p>
+        <p>📌 I want to improve my sleep. Which episode should I watch?</p>
+      </div>
+    </div>
+  </div>
+)}
+
+
+
 
           {/* Regular Messages */}
           {!showInitialMessage &&
@@ -132,13 +146,13 @@ export default function DashboardChat() {
                   return (
                     <div
                       key={index}
-                      className={`mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+                      className={` max-w-[95%] mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
                     >
                       <div
-                        className={`inline-block p-3 rounded-lg ${
+                        className={`inline-block p-3 rounded-t-xl rounded-br-xl ${
                           message.role === 'user'
-                            ? 'bg-customGray text-white'
-                            : 'bg-customGray text-white'
+                            ? 'bg-[#171717] text-white font-semibold '
+                            : 'bg-customLightBlue text-black font-semibold '
                         }`}
                       >
                         {/* Render Thumbnail Image with Link */}
@@ -165,13 +179,13 @@ export default function DashboardChat() {
                   return (
                     <div
                       key={index}
-                      className={`mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+                      className={`max-w-[95%] mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
                     >
                       <div
-                        className={`inline-block p-3 rounded-lg ${
+                        className={`inline-block p-3 rounded-t-xl rounded-br-xl ${
                           message.role === 'user'
-                            ? 'bg-customGray text-white'
-                            : 'bg-customGray text-white'
+                            ? 'bg-[#171717] text-white font-semibold '
+                            : 'bg-customLightBlue text-black font-semibold '
                         }`}
                       >
                         <p>{message.content.replace(/^'|'$/g, '')}</p> {/* Remove enclosing quotes */}
@@ -185,16 +199,16 @@ export default function DashboardChat() {
               return (
                 <div
                   key={index}
-                  className={`mb-6 ${message.role === 'user' ? 'text-right' : 'text-left'}`}
+                  className={`max-w-[95%] mb-6 ${message.role === 'user' ? 'ml-auto text-right' : 'text-left'}`}
                 >
                   <div
-                    className={`inline-block p-3 rounded-lg ${
+                    className={`inline-block p-3 rounded-t-xl rounded-bl-xl ${
                       message.role === 'user'
-                        ? 'bg-customGray text-white'
-                        : 'bg-customGray text-white'
+                        ? 'bg-[#171717] text-white font-semibold text-left '
+                        : 'bg-customLightBlue text-black font-semibold text-left '
                     }`}
                   >
-                    {message.content}
+                    <p>{message.content}</p>
                   </div>
                 </div>
               );
@@ -202,7 +216,7 @@ export default function DashboardChat() {
 
           {/* Loading Indicator */}
           {isLoading && (
-            <div className="text-center text-gray-400 font-semibold mt-4">
+            <div className="text-center text-white-500 font-semibold mt-4">
               Interacting{loadingDots}
             </div>
           )}
@@ -216,7 +230,7 @@ export default function DashboardChat() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Type your message..."
-              className="h-10 flex-1 p-3 rounded-lg bg-customGray text-white placeholder-customWhite focus:outline-none"
+              className="h-10 flex-1 p-3 rounded-lg font-semibold bg-customGray text-white placeholder-customWhite focus:outline-none"
               disabled={isLoading || messageLimitReached} // Disable input if limit is reached
             />
             <button
