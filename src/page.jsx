@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
 
+ // Default to localhost
+
+
 export default function DashboardChat() {
   const [messages, setMessages] = useState([]); // Full chat history
   const [input, setInput] = useState('');
@@ -47,7 +50,7 @@ export default function DashboardChat() {
     setIsLoading(true); // Start loading state
 
     // Send the full message history to the Flask backend
-    fetch('http://127.0.0.1:5000/process-query', {
+    fetch(process.env.REACT_APP_FLASK_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +62,7 @@ export default function DashboardChat() {
         // Add the assistant's response to the chat
         const botMessage = {
           role: 'assistant',
-          content: data.response || 'Error: No response from server',
+          content: data.response || 'Sorry! Could not fetch response. Please try again later.',
         };
         setMessages((prev) => [...prev, botMessage]);
         setIsLoading(false); // Stop loading state
@@ -68,7 +71,7 @@ export default function DashboardChat() {
         console.error('Error:', err);
         const botMessage = {
           role: 'assistant',
-          content: 'Error: Could not fetch response',
+          content: 'Sorry! Could not fetch response. Please try again later.',
         };
         setMessages((prev) => [...prev, botMessage]);
         setIsLoading(false); // Stop loading state
@@ -82,7 +85,7 @@ export default function DashboardChat() {
         <iframe
           title="Power BI Dashboard"
           className="w-full h-full rounded-md"
-          src="https://app.powerbi.com/view?r=eyJrIjoiNWViYTk5YTEtZmRkYy00MmY3LWI4MmMtODA5Y2MwMGQ5MDljIiwidCI6IjdhZmI5ZTIyLTkzMDgtNDE4Ni04ZTI5LWVhMjMxZmYzYmFmNyIsImMiOjN9"
+          src="https://app.powerbi.com/view?r=eyJrIjoiMzYzNTJlNDAtNzc0Mi00Yjc3LWE3ZmQtN2Y5MWFhZjgyY2JhIiwidCI6IjdhZmI5ZTIyLTkzMDgtNDE4Ni04ZTI5LWVhMjMxZmYzYmFmNyIsImMiOjN9"
           allowFullScreen
         />
       </div>
