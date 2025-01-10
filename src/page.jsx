@@ -1,10 +1,8 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
 import { Send } from 'lucide-react';
-
- // Default to localhost
-
 
 export default function DashboardChat() {
   const [messages, setMessages] = useState([]); // Full chat history
@@ -13,7 +11,25 @@ export default function DashboardChat() {
   const [isLoading, setIsLoading] = useState(false); // Loading state
   const [loadingDots, setLoadingDots] = useState('.'); // Dynamic dots state
   const [messageLimitReached, setMessageLimitReached] = useState(false); // Limit state
+  const [isMobile, setIsMobile] = useState(false); // Mobile device detection
+
   const maxMessages = 20; // Maximum number of responses allowed
+
+  // Detect mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      if (window.innerWidth < 768) {
+        setIsMobile(true);
+      } else {
+        setIsMobile(false);
+      }
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Handle dynamic dots animation
   useEffect(() => {
@@ -78,6 +94,17 @@ export default function DashboardChat() {
       });
   };
 
+  if (isMobile) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-100">
+        <div className="p-4 bg-white shadow rounded-lg text-center">
+          <h1 className="text-xl font-bold text-red-600">Access Restricted</h1>
+          <p className="text-gray-700 font-bold">This application is optimized for desktop use only. Please access it on a desktop browser.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen p-1 bg-[#f3f3f3] gap-1">
       {/* Power BI Dashboard (70%) */}
@@ -129,8 +156,6 @@ export default function DashboardChat() {
     </div>
   </div>
 )}
-
-
 
 
           {/* Regular Messages */}
@@ -249,3 +274,4 @@ export default function DashboardChat() {
     </div>
   );
 }
+
